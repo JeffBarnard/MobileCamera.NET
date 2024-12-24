@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MobileCamera.NET.Models;
 using Plugin.BluetoothLE;
+using Plugin.NFC;
 using System.Collections.ObjectModel;
 
 namespace MobileCamera.NET.PageModels
@@ -142,13 +143,54 @@ namespace MobileCamera.NET.PageModels
                 await Refresh();
             }
 
+            // NFC            
+            //CrossNFC.Legacy = false;
 
-            // discover some devices
+            // Event raised when a ndef message is received.
+            CrossNFC.Current.OnMessageReceived += Current_OnMessageReceived;
+            // Event raised when a ndef message has been published.
+            CrossNFC.Current.OnMessagePublished += Current_OnMessagePublished;
+            // Event raised when a tag is discovered. Used for publishing.
+            CrossNFC.Current.OnTagDiscovered += Current_OnTagDiscovered;
+            // Event raised when NFC listener status changed
+            CrossNFC.Current.OnTagListeningStatusChanged += Current_OnTagListeningStatusChanged;
+                        
+            // Event raised when NFC state has changed.
+            CrossNFC.Current.OnNfcStatusChanged += Current_OnNfcStatusChanged;
+
+            CrossNFC.Current.StartListening();
+
+            // Bluetooth discovery
             CrossBleAdapter.Current.Scan().Subscribe(scanResult =>
             {
                 if (!BleScanResults.Contains(scanResult.Device.Name))
                     BleScanResults.Add(scanResult.Device.Name);
             });
+        }
+
+        private void Current_OnTagListeningStatusChanged(bool isListening)
+        {
+            
+        }
+
+        private void Current_OnNfcStatusChanged(bool isEnabled)
+        {
+            
+        }
+
+        private void Current_OnTagDiscovered(ITagInfo tagInfo, bool format)
+        {
+            Application.Current!.MainPage!.DisplayAlert("NFC", tagInfo.Identifier.ToString(), "CANCEL");
+        }
+
+        private void Current_OnMessagePublished(ITagInfo tagInfo)
+        {
+            
+        }
+
+        private void Current_OnMessageReceived(ITagInfo tagInfo)
+        {
+            Application.Current!.MainPage!.DisplayAlert("NFC", tagInfo.SerialNumber, "CANCEL");
         }
 
         [RelayCommand]

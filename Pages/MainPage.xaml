@@ -83,8 +83,8 @@
             </pullToRefresh:SfPullToRefresh.PullableContent>
         </pullToRefresh:SfPullToRefresh>
 
-        <controls:AddButton 
+        <!--<controls:AddButton 
             IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
-            Command="{Binding AddTaskCommand}" />
+            Command="{Binding AddTaskCommand}" />-->
     </Grid>
 </ContentPage>
